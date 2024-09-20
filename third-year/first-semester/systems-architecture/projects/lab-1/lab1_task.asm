@@ -18,7 +18,8 @@ includelib user32.lib
     t DQ 0E7D32A1h
     stra DB 16 dup(1)
 
-    str_fmt DB 6 dup("%s", 9, "%p", 9, "%p", 9, "%d", 10), 13, 0
+    str_fmt DB 6 dup("%d", 9, "%p", 9, "%p", 9, "%s", 10), 13, 0
+    plain_fmt_str DB "%s", 13, 0
     a_name DB "a", 0
     b_name DB "b", 0
     undefined DB "-", 0
@@ -29,40 +30,44 @@ includelib user32.lib
 
 .code
 start:
-    push 16
-    push offset stra + 16 - 1
-    push offset stra
     push offset stra_name
-
-    push 8
-    push offset t + 8 - 1
-    push offset t
-    push offset t_name
-
+    push offset stra
+    push offset stra + 16 - 1
     push 16
-    push offset b + 4 + 6 + 16 - 1
+
+    push offset t_name
+    push offset t
+    push offset t + 8 - 1
+    push 8
+
+    push offset undefined
     push offset b + 4 + 6
-    push offset undefined
+    push offset b + 4 + 6 + 16 - 1
+    push 16
 
-    push 6
-    push offset b + 4 + 6 - 1
+    push offset undefined
     push offset b + 4
-    push offset undefined
+    push offset b + 4 + 6 - 1
+    push 6
 
-    push 4
-    push offset b + 4 - 1
-    push offset b
     push offset b_name
+    push offset b
+    push offset b + 4 - 1
+    push 4
 
-    push offset b - offset a 
-    push offset a + (offset b - offset a) - 1
-    push offset a
     push offset a_name
+    push offset a
+    push offset a + (offset b - offset a) - 1
+    push offset b - offset a 
     
     push offset str_fmt
     push offset buffer
     call crt_sprintf
     add esp, 6 * 4 + 2
+
+    push offset buffer 
+    call crt_puts
+    add esp, 4
 
     push 0
     push offset window_name
