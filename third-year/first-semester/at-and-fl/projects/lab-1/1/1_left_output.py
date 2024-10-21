@@ -1,8 +1,10 @@
+from operator import indexOf
+
 from Node import Node
 from Rule import Rule
 
 
-class LeftOutput2:
+class Task1:
     def __init__(self, grammar_rules):
         self.root = Node('S')
         self.grammar_rules = grammar_rules
@@ -10,9 +12,7 @@ class LeftOutput2:
         self.step_index = 1
 
     def apply(self):
-        inputs = [int(x) for x in input('Введите последовательность шагов: ').split(' ')]
-
-        for i in inputs:
+        while True:
             non_terminal_node = self.get_first_non_terminal()
             if not non_terminal_node:
                 self.print_end_info()
@@ -20,18 +20,13 @@ class LeftOutput2:
             else:
                 rules = self.get_applicable_rules_for_node(non_terminal_node)
                 self.print_info(rules)
-                if i >= len(rules):
-                    print('Нет')
-                    return
-                rule = rules[i]
+                rule, rule_index = self.get_rule_from_input()
                 self.apply_rule_for(non_terminal_node, rule)
                 self.step_index += 1
-                self.steps.append(i)
-
-        print('Да')
+                self.steps.append(rule_index)
 
     def get_first_non_terminal(self):
-        return self.root.find_first_non_terminal_node()
+        return self.root.find_first_non_terminal_node_left()
 
     def get_applicable_rules_for_node(self, node):
         if not node:
@@ -42,18 +37,19 @@ class LeftOutput2:
         print(f'### Шаг {self.step_index} ###')
         print(f'Промежуточная цепочка: {self.root.get_plain_representation()}')
         print('Можно применить: ')
-        for (i, rule) in enumerate(rules):
+        for (i, rule) in [(indexOf(self.grammar_rules, x) + 1, x) for i, x in enumerate(rules)]:
             print(f'{i}. {rule}')
 
     def print_end_info(self):
         print(f'### Шаг {self.step_index} ###')
         print(f'Терминальная цепочка: {self.root.get_plain_representation()}')
-        print(f'Последовательность правил: {' '.join(map(str, self.steps))}')
+        print(f'Последовательность правил: {' '.join(map(str, [x + 1 for x in self.steps]))}')
         print(f'ЛСФ ДВ: {self.root.get_tree_representation()}')
 
-    @staticmethod
-    def get_rule_from_input(rules, rule_index):
-        return rules[rule_index], rule_index
+    def get_rule_from_input(self):
+        rule_index = int(input("Выберите правило: ")) - 1
+        print()
+        return self.grammar_rules[rule_index], rule_index
 
     @staticmethod
     def apply_rule_for(node, rule):
@@ -61,7 +57,7 @@ class LeftOutput2:
 
 
 def main():
-    output = LeftOutput2([
+    output = Task1([
         Rule('S', ['a', 'S', 'S', 'a']),
         Rule('S', ['b', 'S', 'b']),
         Rule('S', ['c', 'A', 'b']),

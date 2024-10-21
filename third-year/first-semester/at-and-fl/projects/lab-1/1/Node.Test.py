@@ -62,7 +62,7 @@ class NodeTest(unittest.TestCase):
             Node('S'),
             Node('a')
         ])
-        self.assertIsNotNone(node.find_node(lambda x: x.value == 'S'))
+        self.assertIsNotNone(node.find_node_left(lambda x: x.value == 'S'))
 
     def test_find_node_should_return_None(self):
         node = Node('S', [
@@ -81,7 +81,7 @@ class NodeTest(unittest.TestCase):
             Node('S'),
             Node('a')
         ])
-        self.assertIsNone(node.find_node(lambda x: x.value == 'A'))
+        self.assertIsNone(node.find_node_left(lambda x: x.value == 'A'))
 
     def test_find_first_non_terminal_should_be_not_None(self):
         node = Node('S', [
@@ -100,15 +100,15 @@ class NodeTest(unittest.TestCase):
             Node('S'),
             Node('a')
         ])
-        self.assertIsNotNone(node.find_first_non_terminal_node())
+        self.assertIsNotNone(node.find_first_non_terminal_node_left())
 
     def test_find_first_non_terminal_should_return_itself(self):
         node = Node('S')
-        self.assertEqual(node.find_first_non_terminal_node(), node)
+        self.assertEqual(node.find_first_non_terminal_node_left(), node)
 
     def test_find_first_non_terminal_should_return_None(self):
         node = Node('a')
-        self.assertIsNone(node.find_first_non_terminal_node())
+        self.assertIsNone(node.find_first_non_terminal_node_left())
 
 
 if __name__ == '__main__':
