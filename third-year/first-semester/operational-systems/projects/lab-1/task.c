@@ -3,185 +3,80 @@
 #include <unistd.h>
 #include <time.h>
 #include <sys/wait.h>
-#include <signal.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
 
-int sharedMemoryId;
-
-void initPids()
+void random_delay(const int max_seconds)
 {
-    pid_t* pids = shmat(sharedMemoryId, NULL, 0);
-
-    for (int i = 0; i < 7; i++)
-    {
-        pids[i] = -1;
-    }
-
-    shmdt(pids);
+    srand(time(NULL) ^ getpid());
+    const int delay = rand() % max_seconds + 1;
+    printf("Процесс %d ждёт %d секунд\n", getpid(), delay);
+    sleep(delay);
 }
 
-void disposePids()
-{
-    shmctl(sharedMemoryId, IPC_RMID, NULL);
-}
-
-void setPid(int index, pid_t pid)
-{
-    pid_t* pids = shmat(sharedMemoryId, NULL, 0);
-
-    pids[index] = pid;
-
-    shmdt(pids);
-}
-
-pid_t getPid(int index)
-{
-    pid_t* pids = shmat(sharedMemoryId, NULL, 0);
-
-    pid_t result = pids[index];
-
-    shmdt(pids);
-
-    return result;
-}
-
-void printProcessesBinaryTree()
-{
-    printf("0. ﹂ %d\n", getPid(0));
-    printf("1.    ﹂ %d\n", getPid(1));
-    printf("2.       ﹂ %d\n", getPid(2));
-    printf("3.       ﹂ %d\n", getPid(3));
-    printf("4.    ﹂ %d\n", getPid(4));
-    printf("5.       ﹂ %d\n", getPid(5));
-    printf("6.       ﹂ %d\n", getPid(6));
-    printf("\n");
-}
-
-int status;
+pid_t pid_0 = -1, pid_1 = -1, pid_2 = -1, pid_3 = -1, pid_4 = -1, pid_5 = -1, pid_6 = -1;
 
 int main()
 {
-    sharedMemoryId = shmget(IPC_PRIVATE, sizeof(pid_t) * 7, IPC_CREAT | 0666);
+    pid_0 = getpid();
 
-    initPids();
+    printf("Запустили корневой процесс %d\n", pid_0);
 
-    setPid(0, getpid());
+    pid_1 = fork();
 
-    printf("Запустили корневой процесс %d\n", getpid());
-
-    pid_t process1 = fork();
-
-    if (process1 == 0)
+    if (pid_1 == 0)
     {
-        setPid(1, getpid());
+        printf("Запустили процесс 1 с ID %d, потомок %d\n", getpid(), getppid());
 
-        printf("Запустили процесс 1 с ID %d который является потомком %d\n", getpid(), getppid());
+        pid_2 = fork();
 
-        pid_t process2 = fork();
-
-        if (process2 != 0)
+        if (pid_2 == 0)
         {
-            setPid(2, getpid());
-
-            printf("Запустили процесс 2 с ID %d который является потомком %d\n", getpid(), getppid());
-
-            pause();
+            printf("Запустили процесс 2 с ID %d, потомок %d\n", getpid(), getppid());
         }
         else
         {
-            pid_t process3 = fork();
+            pid_3 = fork();
 
-            if (process3 == 0)
+            if (pid_3 == 0)
             {
-                setPid(3, process3);
-
-                printf("Запустили процесс 3 с ID %d который является потомком %d\n", getpid(), getppid());
-
-                pause();
+                printf("Запустили процесс 3 с ID %d, потомок %d\n", getpid(), getppid());
             }
         }
-
-        pause();
     }
     else
     {
-        pid_t process4 = fork();
+        pid_4 = fork();
 
-        if (process4 == 0)
+        if (pid_4 == 0)
         {
-            setPid(4, process4);
+            printf("Запустили процесс 4 с ID %d, потомок %d\n", getpid(), getppid());
 
-            printf("Запустили процесс 4 с ID %d который является потомком %d\n", getpid(), getppid());
+            pid_5 = fork();
 
-            pid_t process5 = fork();
-
-            if (process5 == 0)
+            if (pid_5 == 0)
             {
-                setPid(5, getpid());
-
-                pid_t process6 = fork();
-
-                if (process6 == 0)
-                {
-                    setPid(6, process6);
-
-                    printf("Запустили процесс 6 с ID %d который является потомком %d\n", getpid(), getppid());
-
-                    printf("\nДерево процессов выглядит следующим образом\n");
-
-                    printProcessesBinaryTree();
-
-                    process6 = getPid(6);
-
-                    setPid(6, getPid(0));
-
-                    printf("Трансформировали дерево процессов в граф, заменив процесс %d на корневой процесс %d\n",
-                           process6, getPid(0));
-
-                    printf("\nТеперь дерево процессов выглядит следующим образом\n");
-
-                    printProcessesBinaryTree();
-
-                    printf("Процесс 6 завершил свою работу\n");
-
-                    exit(0);
-                }
+                printf("Запустили процесс 5 с ID %d, потомок %d\n", getpid(), getppid());
             }
             else
             {
-                setPid(5, process5);
+                pid_6 = fork();
 
-                printf("Запустили процесс 5 с ID %d который является потомком %d\n", getpid(), getppid());
-
-                printf("Усыпляем процесс 5 на 8 секунд\n");
-
-                sleep(8);
-
-                printf("Процесс 5 завершил свою работу\n");
-
-                exit(0);
+                if (pid_6 == 0)
+                {
+                    printf("Запустили процесс 6 с ID %d, потомок %d\n", getpid(), getppid());
+                }
             }
-
-            printf("Процесс 4 ожидает завершения процесса 5 с ID %d\n", getPid(5));
-
-            waitpid(getPid(5), &status, 0);
-
-            if (WIFEXITED(status))
-            {
-                printf("Процесс 4 завершил свою работу\n");
-            }
-
-            exit(0);
         }
     }
 
-    if (getpid() == getPid(0))
+    random_delay(8);
+
+    exit(0);
+
+    while (wait(NULL) > 0)
     {
-        pause();
     }
 
-    disposePids();
+    printf("Процесс %d завершился\n", getpid());
 
     return 0;
 }
