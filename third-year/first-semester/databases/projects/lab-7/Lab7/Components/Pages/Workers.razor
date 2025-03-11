@@ -1,0 +1,35 @@
+﻿@page "/workers"
+@inject AppDbContext AppDbContext
+
+<h2>Работники</h2>
+
+<Grid TItem="Worker"
+      Class="table table-hover table-bordered table-striped"
+      DataProvider="ProvideWorkerData">
+    <GridColumns>
+        <GridColumn TItem="Worker" HeaderText="ID" PropertyName="Id">
+            @context.Id
+        </GridColumn>
+        <GridColumn TItem="Worker" HeaderText="ФИО" PropertyName="FullName">
+            @context.FullName
+        </GridColumn>
+        <GridColumn TItem="Worker" HeaderText="Специализация" PropertyName="Specialization">
+            @context.Specialization
+        </GridColumn>
+        <GridColumn TItem="Worker" HeaderText="Номер телефона" PropertyName="Phone">
+            @context.Phone
+        </GridColumn>
+    </GridColumns>
+</Grid>
+
+@code 
+{
+    private IEnumerable<Worker>? _workers;
+
+    private async Task<GridDataProviderResult<Worker>> ProvideWorkerData(GridDataProviderRequest<Worker> request)
+    {
+        _workers ??= await AppDbContext.Workers.ToListAsync();
+
+        return request.ApplyTo(_workers);
+    }
+}

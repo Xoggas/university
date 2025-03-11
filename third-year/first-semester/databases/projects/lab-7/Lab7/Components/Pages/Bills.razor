@@ -1,0 +1,40 @@
+﻿@page "/bills"
+@inject AppDbContext AppDbContext
+
+<h2>Счета</h2>
+
+<Grid TItem="Bill"
+      Class="table table-hover table-bordered table-striped"
+      DataProvider="ProvideBillData">
+    <GridColumns>
+        <GridColumn TItem="Bill" HeaderText="ID" PropertyName="Id">
+            @context.Id
+        </GridColumn>
+        <GridColumn TItem="Bill" HeaderText="Имя плательщика">
+            @context.Lodger.Name
+        </GridColumn>
+        <GridColumn TItem="Bill" HeaderText="Сумма" PropertyName="TotalCost">
+            @context.TotalCost
+        </GridColumn>
+        <GridColumn TItem="Bill" HeaderText="Дата выставления" PropertyName="DateOfIssue">
+            @context.DateOfIssue
+        </GridColumn>
+        <GridColumn TItem="Bill" HeaderText="Оплачен?" PropertyName="Status">
+            @context.Status
+        </GridColumn>
+    </GridColumns>
+</Grid>
+
+@code
+{
+    private IEnumerable<Bill>? _bills;
+
+    private async Task<GridDataProviderResult<Bill>> ProvideBillData(GridDataProviderRequest<Bill> request)
+    {
+        _bills ??= await AppDbContext.Bills
+            .Include(x => x.Lodger)
+            .ToListAsync();
+
+        return request.ApplyTo(_bills);
+    }
+}

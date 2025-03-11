@@ -1,0 +1,35 @@
+﻿@page "/lodgers"
+@inject AppDbContext AppDbContext
+
+<h2>Жильцы</h2>
+
+<Grid TItem="Lodger"
+      Class="table table-hover table-bordered table-striped"
+      DataProvider="ProvideLodgerData">
+    <GridColumns>
+        <GridColumn TItem="Lodger" HeaderText="ID" PropertyName="Id">
+            @context.Id
+        </GridColumn>
+        <GridColumn TItem="Lodger" HeaderText="ФИО" PropertyName="Name">
+            @context.Name
+        </GridColumn>
+        <GridColumn TItem="Lodger" HeaderText="Адрес" PropertyName="Address">
+            @context.Address
+        </GridColumn>
+        <GridColumn TItem="Lodger" HeaderText="Номер телефона" PropertyName="Phone">
+            @context.Phone
+        </GridColumn>
+    </GridColumns>
+</Grid>
+
+@code
+{
+    private IEnumerable<Lodger>? _lodgers;
+
+    private async Task<GridDataProviderResult<Lodger>> ProvideLodgerData(GridDataProviderRequest<Lodger> request)
+    {
+        _lodgers ??= await AppDbContext.Lodgers.ToListAsync();
+
+        return request.ApplyTo(_lodgers);
+    }
+}
