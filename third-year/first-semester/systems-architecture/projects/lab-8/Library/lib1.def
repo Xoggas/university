@@ -1,0 +1,8 @@
+LIBRARY lib1
+EXPORTS
+    Sort_stdcall_explicit
+    Sort_cdecl_explicit
+    _Sort_stdcall_implicit@20=_Sort_stdcall_implicit@0
+    Sort_cdecl_implicit
+    @Sort_fastcall_implicit@20=_Sort_fastcall_implicit@4
+    
