@@ -1,0 +1,54 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\user\\Documents\\GitHub\\university\\third-year\\first-semester\\computer-graphics\\Lab1\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{BE69E9A0-AF78-4755-8D5E-AE8AFF0336C6}|Lab1\\Lab1.vcxproj|C:\\Users\\user\\Documents\\GitHub\\university\\third-year\\first-semester\\computer-graphics\\Lab1\\Lab1\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BE69E9A0-AF78-4755-8D5E-AE8AFF0336C6}|Lab1\\Lab1.vcxproj|solutionrelative:Lab1\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BE69E9A0-AF78-4755-8D5E-AE8AFF0336C6}|Lab1\\Lab1.vcxproj|C:\\Users\\user\\Documents\\GitHub\\university\\third-year\\first-semester\\computer-graphics\\Lab1\\Lab1\\Frame.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{BE69E9A0-AF78-4755-8D5E-AE8AFF0336C6}|Lab1\\Lab1.vcxproj|solutionrelative:Lab1\\Frame.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Frame.h",
+              "DocumentMoniker": "C:\\Users\\user\\Documents\\GitHub\\university\\third-year\\first-semester\\computer-graphics\\Lab1\\Lab1\\Frame.h",
+              "RelativeDocumentMoniker": "Lab1\\Frame.h",
+              "ToolTip": "C:\\Users\\user\\Documents\\GitHub\\university\\third-year\\first-semester\\computer-graphics\\Lab1\\Lab1\\Frame.h",
+              "RelativeToolTip": "Lab1\\Frame.h",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABEAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-23T10:21:14.643Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "main.cpp",
+              "DocumentMoniker": "C:\\Users\\user\\Documents\\GitHub\\university\\third-year\\first-semester\\computer-graphics\\Lab1\\Lab1\\main.cpp",
+              "RelativeDocumentMoniker": "Lab1\\main.cpp",
+              "ToolTip": "C:\\Users\\user\\Documents\\GitHub\\university\\third-year\\first-semester\\computer-graphics\\Lab1\\Lab1\\main.cpp",
+              "RelativeToolTip": "Lab1\\main.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2025-04-23T10:20:54.842Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
