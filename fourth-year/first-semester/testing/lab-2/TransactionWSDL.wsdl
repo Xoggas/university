@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="TransactionWSDL" targetNamespace="http://bank/TransactionWSDL"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://bank/TransactionWSDL" xmlns:ns="http://bank/schema/WSCommonTypes" xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    <types>
+        <xsd:schema targetNamespace="http://bank/TransactionWSDL">
+            <xsd:import namespace="http://bank/schema/WSCommonTypes" schemaLocation="WSCommonTypes.xsd"/>
+        </xsd:schema>
+    </types>
+    <message name="CheckAccountRequest">
+        <part name="CheckAccountRequest" element="ns:CheckAccountRequest"/>
+    </message>
+    <message name="CheckAccountResponse">
+        <part name="CheckAccountResponse" element="ns:CheckAccountResponse"/>
+    </message>
+    <message name="TransactRequest">
+        <part name="TransactRequest" element="ns:TransactRequest"/>
+    </message>
+    <message name="TransactResponse">
+        <part name="TransactResponse" element="ns:TransactResponse"/>
+    </message>
+    <message name="ErrorResponse">
+        <part name="ErrorResponse" element="ns:ErrorResponse"/>
+    </message>
+    <portType name="TransactionWSDLPortType">
+        <operation name="CheckAccount">
+            <input name="input1" message="tns:CheckAccountRequest"/>
+            <output name="output1" message="tns:CheckAccountResponse"/>
+            <fault name="fault1" message="tns:ErrorResponse"/>
+        </operation>
+        <operation name="Transact">
+            <input name="input2" message="tns:TransactRequest"/>
+            <output name="output2" message="tns:TransactResponse"/>
+            <fault name="fault2" message="tns:ErrorResponse"/>
+        </operation>
+    </portType>
+    <binding name="TransactionWSDLBinding" type="tns:TransactionWSDLPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="CheckAccount">
+            <soap:operation/>
+            <input name="input1">
+                <soap:body use="literal"/>
+            </input>
+            <output name="output1">
+                <soap:body use="literal"/>
+            </output>
+            <fault name="fault1">
+                <soap:fault name="fault1" use="literal"/>
+            </fault>
+        </operation>
+        <operation name="Transact">
+            <soap:operation/>
+            <input name="input2">
+                <soap:body use="literal"/>
+            </input>
+            <output name="output2">
+                <soap:body use="literal"/>
+            </output>
+            <fault name="fault2">
+                <soap:fault name="fault2" use="literal"/>
+            </fault>
+        </operation>
+    </binding>
+    <service name="TransactionWSDLService">
+        <port name="TransactionWSDLPort" binding="tns:TransactionWSDLBinding">
+            <soap:address location="http://localhost:${HttpDefaultPort}/TransactionWSDLService/TransactionWSDLPort"/>
+        </port>
+    </service>
+    <plnk:partnerLinkType name="TransactionWSDL">
+        <plnk:role name="TransactionWSDLPortTypeRole" portType="tns:TransactionWSDLPortType"/>
+    </plnk:partnerLinkType>
+</definitions>
+
+
+

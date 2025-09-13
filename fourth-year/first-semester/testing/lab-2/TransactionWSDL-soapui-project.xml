@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsc="http://bank/schema/WSCommonTypes">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <wsc:CheckAccountRequest>
+         <wsc:AccountNumber>300700</wsc:AccountNumber>
+         <wsc:Name>Александр</wsc:Name>
+         <wsc:Surname>Короткунов</wsc:Surname>
+         <wsc:Passport>12 34 567890</wsc:Passport>
+      </wsc:CheckAccountRequest>
+   </soapenv:Body>
+</soapenv:Envelope>

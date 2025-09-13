@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://bank/schema/WSCommonTypes"
+    xmlns:tns="http://bank/schema/WSCommonTypes"
+    elementFormDefault="qualified">
+
+<xsd:element name = "CheckAccountRequest" type = "tns:CheckAccountRequest"/>
+<xsd:element name= "CheckAccountResponse" type = "tns:CheckAccountResponse"/>
+<xsd:element name= "TransactRequest" type="tns:TransactRequest"/>
+<xsd:element name = "TransactResponse" type = "tns:TransactResponse"/>
+<xsd:element name= "ErrorResponse" type="tns:ErrorResponse"/>
+
+<xsd:complexType name="CheckAccountRequest">
+    <xsd:sequence>
+        <xsd:element name="AccountNumber" type = "xsd:string"/>
+        <xsd:element name="Name" type = "xsd:string"/>
+        <xsd:element name="Surname" type = "xsd:string"/>
+        <xsd:element name="Passport" type = "xsd:string"/>
+    </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="CheckAccountResponse">
+    <xsd:sequence>
+        <xsd:element name="AccountNumber" type = "xsd:string"/>
+        <xsd:element name="Status" type = "xsd:string"/>
+    </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="TransactRequest">
+    <xsd:sequence>
+        <xsd:element name="AccountNumber" type="xsd:string"/>
+        <xsd:element name="Sum" type="xsd:decimal"/>
+        <xsd:element name="Target" type = "xsd:string"/>
+    </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="TransactResponse">
+    <xsd:sequence>
+        <xsd:element name="TransactionId" type="xsd:string"/>
+        <xsd:element name="TransactionStatus" type="xsd:string"/>
+    </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="ErrorResponse">
+    <xsd:sequence>
+        <xsd:element name="ErrorCode" type="xsd:string"/>
+        <xsd:element name="ErrorString" type="xsd:string"/>
+    </xsd:sequence>
+</xsd:complexType>
+</xsd:schema>
