@@ -14,11 +14,9 @@
 }
 
 .main {
-  display: grid;
-  grid-template-rows: 1fr;
-  gap: 1em;
-  padding: 0 10em;
+  display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 @media screen and (orientation: portrait) {
