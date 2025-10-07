@@ -23,10 +23,10 @@ namespace Talksy.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("ChatMember1Id")
+                    b.Property<Guid>("ChatMember1Id")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("ChatMember2Id")
+                    b.Property<Guid>("ChatMember2Id")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -44,7 +44,7 @@ namespace Talksy.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("ChatId")
+                    b.Property<Guid>("ChatId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Content")
@@ -52,7 +52,10 @@ namespace Talksy.Api.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("SenderId")
+                    b.Property<Guid>("SenderId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("SentAt")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -94,11 +97,15 @@ namespace Talksy.Api.Migrations
                 {
                     b.HasOne("Talksy.Api.Models.User", "ChatMember1")
                         .WithMany()
-                        .HasForeignKey("ChatMember1Id");
+                        .HasForeignKey("ChatMember1Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Talksy.Api.Models.User", "ChatMember2")
                         .WithMany()
-                        .HasForeignKey("ChatMember2Id");
+                        .HasForeignKey("ChatMember2Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ChatMember1");
 
@@ -109,11 +116,15 @@ namespace Talksy.Api.Migrations
                 {
                     b.HasOne("Talksy.Api.Models.Chat", "Chat")
                         .WithMany()
-                        .HasForeignKey("ChatId");
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Talksy.Api.Models.User", "Sender")
                         .WithMany()
-                        .HasForeignKey("SenderId");
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Chat");
 

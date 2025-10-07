@@ -10,7 +10,8 @@ namespace Talksy.Api.Services;
 
 public interface IUserService
 {
-    Task<Result<UserDto>> GetUserByUsernameAsync(string username);
+    Task<Result<UserDto>> GetUserByIdAsync(Guid userId);
+    Task<Result<IEnumerable<UserDto>>> GetUsersByUsernameAsync(string username);
     Task<Result<UserDto>> RegisterUserAsync(UserRegisterDto user);
     Task<Result<string>> AuthorizeUserAsync(UserLoginDto dto);
 }
@@ -31,18 +32,29 @@ public sealed class UserService : IUserService
         _jwtTokenGenerator = jwtTokenGenerator;
     }
 
-    public async Task<Result<UserDto>> GetUserByUsernameAsync(string username)
+    public async Task<Result<UserDto>> GetUserByIdAsync(Guid userId)
     {
-        var userModel = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
+        var userModel = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
         if (userModel is null)
         {
-            return Result.Failure<UserDto>("Invalid username or password");
+            return Result.Failure<UserDto>("Invalid user id");
         }
 
         var userReadDto = _mapper.Map<UserDto>(userModel);
 
         return Result.Success(userReadDto);
+    }
+
+    public async Task<Result<IEnumerable<UserDto>>> GetUsersByUsernameAsync(string username)
+    {
+        var userModels = await _dbContext.Users
+            .Where(u => EF.Functions.Like(u.Username, $"%{username}%"))
+            .ToListAsync();
+
+        var userDtos = _mapper.Map<IEnumerable<UserDto>>(userModels);
+
+        return Result.Success(userDtos);
     }
 
     public async Task<Result<UserDto>> RegisterUserAsync(UserRegisterDto dto)

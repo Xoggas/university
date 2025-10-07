@@ -7,6 +7,7 @@ public sealed class Message
     [Key]
     public Guid Id { get; init; }
 
+    public DateTime SentAt { get; init; }
     public Chat Chat { get; init; } = null!;
     public User Sender { get; init; } = null!;
 

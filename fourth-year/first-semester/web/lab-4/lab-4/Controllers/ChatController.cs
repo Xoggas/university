@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using CSharpFunctionalExtensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Talksy.Api.Dtos.Chat;
@@ -43,14 +44,13 @@ public sealed class ChatController : ControllerBase
     public async Task<ActionResult<IEnumerable<ChatDto>>> GetChatsAsync()
     {
         var userId = GetUserIdFromJwt();
-        var result = await _chatService.FindChatsForUserAsync(userId);
+        var (_, isFailure, chatDtos) = await _chatService.FindChatsForUserAsync(userId);
 
-        if (result.IsFailure)
+        if (isFailure)
         {
             return NotFound();
         }
 
-        var chatDtos = result.Value;
         return Ok(chatDtos);
     }
 
@@ -70,14 +70,13 @@ public sealed class ChatController : ControllerBase
     public async Task<ActionResult<ChatDto>> CreateChatAsync(Guid receiverId)
     {
         var senderId = GetUserIdFromJwt();
-        var result = await _chatService.CreateChatAsync(senderId, receiverId);
+        var (_, isFailure, chatDto, error) = await _chatService.CreateChatAsync(senderId, receiverId);
 
-        if (result.IsFailure)
+        if (isFailure)
         {
-            return BadRequest(result.Error);
+            return BadRequest(error);
         }
 
-        var chatDto = result.Value;
         return Ok(chatDto);
     }
 
@@ -95,15 +94,38 @@ public sealed class ChatController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<IEnumerable<MessageDto>>> GetMessagesFromChatAsync(Guid chatId)
     {
-        var result = await _chatService.GetMessagesFromChatAsync(chatId);
+        var (_, isFailure, messageDtos, error) = await _chatService.GetMessagesFromChatAsync(chatId);
 
-        if (result.IsFailure)
+        if (isFailure)
         {
-            return BadRequest(result.Error);
+            return BadRequest(error);
         }
 
-        var messageDtos = result.Value;
         return Ok(messageDtos);
+    }
+    
+    /// <summary>
+    /// Получить последнее из указанного чата.
+    /// </summary>
+    /// <param name="chatId">Id чата.</param>
+    /// <returns>Последние сообщение.</returns>
+    [HttpGet("message/{chatId:guid}/last")]
+    [Authorize]
+    [SwaggerOperation(Summary = "Получить последние сообщение в чате",
+        Description = "Возвращает последнее сообщение из указанного чата.")]
+    [ProducesResponseType(typeof(MessageDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<MessageDto>> GetLastMessageFromChatAsync(Guid chatId)
+    {
+        var (_, isFailure, messageDto, error) = await _chatService.GetLastMessageFromChatAsync(chatId);
+
+        if (isFailure)
+        {
+            return NotFound(error);
+        }
+
+        return Ok(messageDto);
     }
 
     /// <summary>
@@ -119,14 +141,13 @@ public sealed class ChatController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<MessageDto>> SendMessageAsync(MessageCreateDto dto)
     {
-        var result = await _chatService.SendMessageAsync(dto);
+        var (_, isFailure, messageDto, error) = await _chatService.SendMessageAsync(dto);
 
-        if (result.IsFailure)
+        if (isFailure)
         {
-            return BadRequest(result.Error);
+            return BadRequest(error);
         }
 
-        var messageDto = result.Value;
         return Ok(messageDto);
     }
 }

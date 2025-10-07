@@ -14,6 +14,11 @@ public sealed class MessageDto
     public Guid Id { get; init; }
 
     /// <summary>
+    /// Время, когда сообщение было отправлено.
+    /// </summary>
+    public DateTime SentAt { get; init; }
+    
+    /// <summary>
     /// Чат, к которому относится сообщение.
     /// </summary>
     public ChatDto Chat { get; init; } = null!;

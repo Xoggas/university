@@ -19,6 +19,7 @@ public class JwtTokenGenerator
     {
         var claims = new[]
         {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(User.JwtUserIdClaimName, user.Id.ToString())
         };
 

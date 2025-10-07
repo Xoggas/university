@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Talksy.Api.Dtos.User;
@@ -21,16 +22,47 @@ public class UserController : ControllerBase
     }
 
     /// <summary>
-    /// Получить пользователя по имени пользователя (username).
+    /// Получение данных о пользователе, который делает запрос на основе JWT.
+    /// </summary>
+    /// <returns>Возвращает пользователя на основе данных из JWT токена.</returns>
+    [HttpGet("whoami")]
+    [Authorize]
+    [SwaggerOperation(Summary = "Получение пользователя из JWT",
+        Description = "Возвращает пользователя по данным из JWT.")]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<Guid>> GetUserIdFromJwt()
+    {
+        var userIdRaw = User.FindFirst(Models.User.JwtUserIdClaimName)?.Value;
+        
+        if (userIdRaw is null)
+        {
+            return NotFound();
+        }
+        
+        var userId = Guid.Parse(userIdRaw);
+        var result = await _userService.GetUserByIdAsync(userId);
+
+        if (result.IsFailure)
+        {
+            return NotFound();
+        }
+
+        return Ok(result.Value);
+    }
+
+    /// <summary>
+    /// Получить пользователей по имени пользователя (username).
     /// </summary>
     /// <param name="username">Имя пользователя.</param>
-    /// <returns>Данные пользователя.</returns>
-    [HttpGet("{username}")]
-    [SwaggerOperation(Summary = "Получить пользователя по username",
-        Description = "Возвращает данные пользователя по имени пользователя.")]
-    [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<UserDto>> GetUserByUsernameAsync(string username, IValidator<UserFindDto> validator)
+    /// <returns>Данные пользователей.</returns>
+    [HttpGet("find/{username}")]
+    [SwaggerOperation(Summary = "Получить пользователей по username",
+        Description = "Возвращает данные пользователей по имени пользователя.")]
+    [ProducesResponseType(typeof(IEnumerable<UserDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<IEnumerable<UserDto>>> FindUsersByUsername(string username, IValidator<UserFindDto> validator)
     {
         var userFindDto = new UserFindDto
         {
@@ -44,12 +76,7 @@ public class UserController : ControllerBase
             return BadRequest(validationResult.Errors);
         }
 
-        var result = await _userService.GetUserByUsernameAsync(username);
-
-        if (result.IsFailure)
-        {
-            return NotFound();
-        }
+        var result = await _userService.GetUsersByUsernameAsync(username);
 
         return Ok(result.Value);
     }
@@ -58,12 +85,12 @@ public class UserController : ControllerBase
     /// Зарегистрировать нового пользователя.
     /// </summary>
     /// <param name="dto">Данные для регистрации.</param>
-    /// <returns>Созданный пользователь.</returns>
+    /// <returns>JWT токен.</returns>
     [HttpPost("register")]
     [SwaggerOperation(Summary = "Регистрация пользователя", Description = "Создает нового пользователя в системе.")]
-    [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<UserDto>> RegisterUserAsync(UserRegisterDto dto)
+    public async Task<ActionResult> RegisterUserAsync(UserRegisterDto dto)
     {
         var result = await _userService.RegisterUserAsync(dto);
 
@@ -72,7 +99,13 @@ public class UserController : ControllerBase
             return Conflict(result.Error);
         }
 
-        return Ok(result.Value);
+        var userLoginDto = new UserLoginDto
+        {
+            Username = dto.Username,
+            Password = dto.Password
+        };
+
+        return await AuthorizeUserAsync(userLoginDto);
     }
 
     /// <summary>
@@ -85,7 +118,7 @@ public class UserController : ControllerBase
         Description = "Возвращает JWT-токен при успешной авторизации.")]
     [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<string>> AuthorizeUserAsync(UserLoginDto dto)
+    public async Task<ActionResult> AuthorizeUserAsync(UserLoginDto dto)
     {
         var result = await _userService.AuthorizeUserAsync(dto);
 

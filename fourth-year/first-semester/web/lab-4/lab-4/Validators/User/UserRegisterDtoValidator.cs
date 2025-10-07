@@ -11,13 +11,13 @@ public sealed class UserRegisterDtoValidator : AbstractValidator<UserRegisterDto
             .NotEmpty().WithMessage("Username is required")
             .MinimumLength(3).WithMessage("Username must be at least 3 characters long")
             .MaximumLength(50).WithMessage("Username exceeds 50 characters")
-            .Matches("^[a-zA-Z0-9]+$").WithMessage("Username can contain only letters, digits, and underscore");
+            .Matches("^[a-zA-Z0-9_]+$").WithMessage("Username can contain only letters, digits, and underscore");
 
         RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Name is required")
             .MinimumLength(3).WithMessage("Name must be at least 3 characters long")
             .MaximumLength(50).WithMessage("Name exceeds 50 characters")
-            .Matches("^[a-zA-Z0-9 ]+$").WithMessage("Name can contain only letters and digits");
+            .Matches(@"^[\p{L}\p{Nd} ]*$").WithMessage("Name can contain only letters and digits");
 
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Password is required")

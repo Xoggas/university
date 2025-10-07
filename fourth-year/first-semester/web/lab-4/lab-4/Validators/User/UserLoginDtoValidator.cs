@@ -11,7 +11,7 @@ public sealed class UserLoginDtoValidator : AbstractValidator<UserLoginDto>
             .NotEmpty().WithMessage("Username is required")
             .MinimumLength(3).WithMessage("Username must be at least 3 characters long")
             .MaximumLength(50).WithMessage("Username exceeds 50 characters")
-            .Matches("^[a-zA-Z0-9]+$").WithMessage("Username can contain only letters, digits, and underscore");
+            .Matches("^[a-zA-Z0-9_]+$").WithMessage("Username can contain only letters, digits, and underscore");
 
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Password is required")
