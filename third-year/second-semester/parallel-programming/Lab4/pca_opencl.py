@@ -1,23 +1,3 @@
-
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-PCA with OpenCL (float32 throughout).
-
-Implements parallel steps:
-  • Centering (each work-item subtracts feature mean from an element)
-  • Covariance computation (each work-item computes one (i,j))
-  • Power iteration (matvec, reduction for norm, normalization)
-  • Projection (each work-item computes one projected value)
-
-Usage:
-  python pca_opencl.py --data sample.csv --components 2 --iterations 100
-
-Input CSV: N rows, D columns, no header, whitespace or comma-separated.
-Outputs: principal components (top M eigenvectors) and projected data (N x M).
-Compares wall-clock against a NumPy CPU baseline.
-"""
-
 import argparse, time, sys, math, os
 import numpy as np
 
